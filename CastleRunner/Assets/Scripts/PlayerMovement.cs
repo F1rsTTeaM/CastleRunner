@@ -14,19 +14,27 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Двигаем персонажа влево и вправо
-        float moveInput = Input.GetAxis("Horizontal"); // A/D или стрелки ←/→
+        // Движение влево-вправо
+        float moveInput = Input.GetAxis("Horizontal");
         rb.linearVelocity = new Vector3(moveInput * speed, rb.linearVelocity.y, 0);
 
-        // Прыжок (если стоим на земле)
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        // Прыжок (если персонаж на земле и нажата одна из клавиш)
+        if (IsJumpKeyPressed() && isGrounded)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, 0);
-            isGrounded = false; // Пока не коснёмся земли, нельзя прыгать
+            isGrounded = false;
         }
     }
 
-    // Проверяем, стоит ли персонаж на земле
+    // Проверка всех клавиш для прыжка
+    private bool IsJumpKeyPressed()
+    {
+        return Input.GetKeyDown(KeyCode.Space) ||
+               Input.GetKeyDown(KeyCode.W) ||
+               Input.GetKeyDown(KeyCode.UpArrow);
+    }
+
+    // Проверка земли
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -35,9 +43,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Дополнительный прыжок (например, после убийства врага)
     public void JumpAfterKill()
     {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z); // Подбрасываем игрока
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
     }
-
 }
