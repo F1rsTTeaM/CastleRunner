@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private bool isGrounded;
     private bool facingRight = true; // Следим за направлением взгляда
+
+    public float targetXPosition = 143;
+    public string sceneName = "MainMenu";
 
     private Animator animator;
 
@@ -58,6 +62,11 @@ public class PlayerMovement : MonoBehaviour
             Respawn();
         }
 
+        if (transform.position.x >= targetXPosition)
+        {
+            // Загружаем новую сцену
+            SceneManager.LoadScene(sceneName);
+        }
     }
 
     void Respawn()
