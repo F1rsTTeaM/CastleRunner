@@ -4,13 +4,20 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
     public float jumpForce = 7f;
+
+    public Transform RespawnPoint;
+
+    public float fallThreshold = -10f;
     private Rigidbody rb;
     private bool isGrounded;
     private bool facingRight = true; // Следим за направлением взгляда
 
+    private Animator animator;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -18,6 +25,8 @@ public class PlayerMovement : MonoBehaviour
         // Движение влево-вправо
         float moveInput = Input.GetAxis("Horizontal");
         rb.linearVelocity = new Vector3(moveInput * speed, rb.linearVelocity.y, 0);
+
+        animator.SetBool("isJump", !isGrounded);
 
         // Поворот игрока
         if (moveInput > 0 && !facingRight)
@@ -37,11 +46,23 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, 0);
             isGrounded = false;
         }
+
+        if (transform.position.y < fallThreshold)
+        {
+            Respawn();
+        }
+
+    }
+
+    void Respawn()
+    {
+        transform.position = RespawnPoint.position;
+        rb.linearVelocity = Vector3.zero;
     }
 
     void Rotate(float yRotation)
     {
-        transform.rotation = Quaternion.Euler(-90f, yRotation, 0f);
+        transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
     }
 
     // Проверка всех клавиш для прыжка
