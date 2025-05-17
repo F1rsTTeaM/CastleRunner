@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
         float moveInput = Input.GetAxis("Horizontal");
         rb.linearVelocity = new Vector3(moveInput * speed, rb.linearVelocity.y, 0);
 
-        animator.SetBool("isJump", !isGrounded);
+        animator.SetBool("isJumping", !isGrounded);
 
         // Поворот игрока
         if (moveInput > 0 && !facingRight)
@@ -45,6 +45,12 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, 0);
             isGrounded = false;
+            animator.SetBool("isJumping", true);
+        }
+
+        if (isGrounded)
+        {
+            animator.SetBool("isJumping", false);
         }
 
         if (transform.position.y < fallThreshold)
@@ -76,7 +82,7 @@ public class PlayerMovement : MonoBehaviour
     // Проверка земли
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("MovingPlatform"))
         {
             isGrounded = true;
         }

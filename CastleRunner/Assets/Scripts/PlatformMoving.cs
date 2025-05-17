@@ -7,26 +7,22 @@ public class PlatformMoving : MonoBehaviour
     public Transform pointB;
 
     private Vector3 target;
+    private Rigidbody rb;
 
     void Start()
     {
         target = pointB.position;
+        rb = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        Vector3 newPos = Vector3.MoveTowards(transform.position, target, speed * Time.fixedDeltaTime);
+        rb.MovePosition(newPos);
 
         if (Vector3.Distance(transform.position, target) < 0.1f)
         {
-            if (target == pointA.position)
-            {
-                target = pointB.position;
-            }
-            else
-            {
-                target = pointA.position;
-            }
+            target = (target == pointA.position) ? pointB.position : pointA.position;
         }
     }
 }
